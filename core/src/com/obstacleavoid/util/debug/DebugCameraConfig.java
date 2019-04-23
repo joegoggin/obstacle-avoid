@@ -177,6 +177,28 @@ public class DebugCameraConfig {
         return Gdx.input.isKeyPressed(logKey);
     }
 
+    @Override
+    public String toString() {
+        String LS = System.getProperty("line.separator");
+
+        return "DebugCameraCongif { " + LS +
+                "maxZoomIn = " + maxZoomIn + LS +
+                "maxOutIn = " + maxZoomOut + LS +
+                "moveSpeed = " + moveSpeed + LS +
+                "zoomSpeed = " + zoomSpeed + LS +
+                "leftKey = " + Input.Keys.toString(leftKey) + LS +
+                "rightKey = " + Input.Keys.toString(rightKey) + LS +
+                "upKey = " + Input.Keys.toString(upKey) + LS +
+                "downKey = " + Input.Keys.toString(downKey) + LS +
+                "leftKey = " + Input.Keys.toString(leftKey) + LS +
+                "zoomInKey = " + Input.Keys.toString(zoomInKey) + LS +
+                "zoomOutKey = " + Input.Keys.toString(zoomOutKey) + LS +
+                "resetKey = " + Input.Keys.toString(resetKey) + LS +
+                "logKey = " + Input.Keys.toString(logKey) + LS +
+                "}";
+
+    }
+
     private static int getInputKeyValue(JsonValue root, String name, int defaultInput) {
         String keyString = root.getString(name, Input.Keys.toString(defaultInput));
         return Input.Keys.valueOf(keyString);

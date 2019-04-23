@@ -11,8 +11,8 @@
   "rightKey" : "D",
 
   // zoom keys
-  "zoomInKey" : ",",
-  "zoomOutKey" : ".",
+  "zoomInKey" : "Q",
+  "zoomOutKey" : "E",
 
   // reset/log
   // delete is the same as backspace
