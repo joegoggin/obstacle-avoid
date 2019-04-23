@@ -200,7 +200,10 @@ public class DebugCameraConfig {
     }
 
     private static int getInputKeyValue(JsonValue root, String name, int defaultInput) {
+        // get value with name from jsonValue (name-value map) if doesn't exist use default
         String keyString = root.getString(name, Input.Keys.toString(defaultInput));
+
+        // convert String into keycode
         return Input.Keys.valueOf(keyString);
     }
 }

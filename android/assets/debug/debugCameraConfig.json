@@ -16,7 +16,7 @@
 
   // reset/log
   // delete is the same as backspace
-  "resetKey" : "Delete",
+  "resetKey" : "R",
   "logKey" : "Enter"
 
 }
