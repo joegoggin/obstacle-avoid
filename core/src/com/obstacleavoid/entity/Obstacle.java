@@ -1,5 +1,8 @@
 package com.obstacleavoid.entity;
 
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+
 public class Obstacle extends GameObjectBase {
 
     private static final float BOUNDS_RADIUS = 0.3f; // world units
@@ -17,5 +20,11 @@ public class Obstacle extends GameObjectBase {
 
     public float getWidth() {
         return SIZE;
+    }
+
+    public boolean isPlayerColliding(Player player) {
+        Circle playerBounds = player.getBounds();
+        // check if playerBounds overlap obstacle bounds
+        return Intersector.overlaps(playerBounds, getBounds());
     }
 }

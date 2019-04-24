@@ -36,4 +36,7 @@ public abstract class GameObjectBase {
         bounds.setPosition(x, y);
     }
 
+    public Circle getBounds() {
+        return bounds;
+    }
 }
