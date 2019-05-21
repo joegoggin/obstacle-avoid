@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.obstacleavoid.assets.AssetsPaths;
+import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Obstacle;
 import com.obstacleavoid.entity.Player;
@@ -42,6 +43,7 @@ public class GameScreen implements Screen {
     private int lives = GameConfig.LIVES_START;
     private int score;
     private int displayScore;
+    private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
 
     private DebugCameraController debugCameraController;
 
@@ -91,7 +93,7 @@ public class GameScreen implements Screen {
     }
 
     private void update(float delta) {
-        if(isGameOver()) {
+        if (isGameOver()) {
             log.debug("Game Over!!!");
             return;
         }
@@ -154,6 +156,7 @@ public class GameScreen implements Screen {
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
             Obstacle obstacle = new Obstacle();
+            obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 
             obstacles.add(obstacle);
@@ -208,7 +211,7 @@ public class GameScreen implements Screen {
     }
 
     private void updateDisplayScore(float delta) {
-        if(displayScore < score) {
+        if (displayScore < score) {
             displayScore = Math.min(score, displayScore + (int) (60 * delta));
         }
     }
