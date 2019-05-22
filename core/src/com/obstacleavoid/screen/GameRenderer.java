@@ -1,15 +1,13 @@
 package com.obstacleavoid.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.obstacleavoid.assets.AssetsPaths;
@@ -20,11 +18,10 @@ import com.obstacleavoid.entity.Player;
 import com.obstacleavoid.util.GdxUtils;
 import com.obstacleavoid.util.ViewportUtils;
 import com.obstacleavoid.util.debug.DebugCameraController;
-@Deprecated
-public class GameScreenOld implements Screen {
 
-    private static final Logger log = new Logger(GameScreenOld.class.getName(), Logger.DEBUG);
+public class GameRenderer implements Disposable {
 
+    // == attributes ==
     private OrthographicCamera camera;
     private Viewport viewport;
     private ShapeRenderer renderer;
@@ -46,10 +43,13 @@ public class GameScreenOld implements Screen {
     private int displayScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
 
+    // == constructors ==
+    public GameRenderer() {
+        init();
+    }
 
-
-    @Override
-    public void show() {
+    // == init ==
+    private void init() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
         renderer = new ShapeRenderer();
@@ -62,27 +62,14 @@ public class GameScreenOld implements Screen {
         // create debug camera controller
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
-
-        // create player
-        player = new Player();
-
-        // calculate position
-        float startPlayerX = GameConfig.WORLD_WIDTH / 2f;
-        float startPlayerY = 1;
-
-        // position player
-        player.setPosition(startPlayerX, startPlayerY);
-
     }
 
-    @Override
+    // == public methods ==
     public void render(float delta) {
         // not wrapping inside alive cuz we want to be able to control camera even when there is game over
         debugCameraController.handleDebugInput(delta);
         debugCameraController.applyTo(camera);
 
-        // update world
-        update(delta);
 
         // clear screen
         GdxUtils.clearScreen();
@@ -94,93 +81,20 @@ public class GameScreenOld implements Screen {
         renderDebug();
     }
 
-    private void update(float delta) {
-        if (isGameOver()) {
-            log.debug("Game Over!!!");
-            return;
-        }
-
-        updatePlayer();
-        updateObstacles(delta);
-        updateScore(delta);
-        updateDisplayScore(delta);
-
-        if (isPlayerCollidingWithObstacle()) {
-            log.debug("Collision detected.");
-            lives--;
-        }
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+        hudViewport.update(width, height, true);
+        ViewportUtils.debugPixelPerUnit(viewport);
     }
 
-    private boolean isGameOver() {
-        return lives <= 0;
+    @Override
+    public void dispose() {
+        renderer.dispose();
+        batch.dispose();
+        font.dispose();
     }
 
-    private boolean isPlayerCollidingWithObstacle() {
-        for (Obstacle obstacle : obstacles) {
-            if (obstacle.isNotHit() && obstacle.isPlayerColliding(player)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void updatePlayer() {
-        player.update();
-        blockPlayerFromLeavingTheWorld();
-    }
-
-    private void blockPlayerFromLeavingTheWorld() {
-        float playerX = MathUtils.clamp(
-                player.getX(), // value
-                player.getWidth() / 2f, // min
-                GameConfig.WORLD_WIDTH - player.getWidth() / 2f // max
-        );
-
-        player.setPosition(playerX, player.getY());
-    }
-
-    private void updateObstacles(float delta) {
-        for (Obstacle obstacle : obstacles) {
-            obstacle.update();
-        }
-
-        createNewObstacle(delta);
-    }
-
-    private void createNewObstacle(float delta) {
-        obstacleTimer += delta;
-
-        if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
-            float min = 0f;
-            float max = GameConfig.WORLD_WIDTH;
-            float obstacleX = MathUtils.random(min, max);
-            float obstacleY = GameConfig.WORLD_HEIGHT;
-
-            Obstacle obstacle = new Obstacle();
-            obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
-            obstacle.setPosition(obstacleX, obstacleY);
-
-            obstacles.add(obstacle);
-            obstacleTimer = 0f;
-        }
-    }
-
-    private void updateScore(float delta) {
-        scoreTimer += delta;
-
-        if (scoreTimer >= GameConfig.SCORE_MAX_TIME) {
-            score += MathUtils.random(1, 5);
-            scoreTimer = 0.0f;
-        }
-    }
-
-    private void updateDisplayScore(float delta) {
-        if (displayScore < score) {
-            displayScore = Math.min(score, displayScore + (int) (60 * delta));
-        }
-    }
-
+    // == private methods ==
     private void renderUi() {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
@@ -216,34 +130,5 @@ public class GameScreenOld implements Screen {
         for (Obstacle obstacle : obstacles) {
             obstacle.drawDebug(renderer);
         }
-    }
-
-    @Override
-    public void dispose() {
-        renderer.dispose();
-        batch.dispose();
-        font.dispose();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        hudViewport.update(width, height, true);
-        ViewportUtils.debugPixelPerUnit(viewport);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        dispose();
     }
 }
