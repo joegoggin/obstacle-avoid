@@ -42,7 +42,7 @@ public class GameController {
     }
 
     // == public methods ==
-    private void update(float delta) {
+    public void update(float delta) {
         if (isGameOver()) {
             log.debug("Game Over!!!");
             return;
@@ -57,6 +57,22 @@ public class GameController {
             log.debug("Collision detected.");
             lives--;
         }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Array<Obstacle> getObstacles() {
+        return obstacles;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public int getDisplayScore() {
+        return displayScore;
     }
 
     // == private methods ==

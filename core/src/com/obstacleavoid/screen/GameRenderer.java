@@ -11,10 +11,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.obstacleavoid.assets.AssetsPaths;
-import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Obstacle;
-import com.obstacleavoid.entity.Player;
 import com.obstacleavoid.util.GdxUtils;
 import com.obstacleavoid.util.ViewportUtils;
 import com.obstacleavoid.util.debug.DebugCameraController;
@@ -33,18 +31,12 @@ public class GameRenderer implements Disposable {
     private BitmapFont font;
     private final GlyphLayout layout = new GlyphLayout();
     private DebugCameraController debugCameraController;
+    private final GameController controller;
 
-    private Player player;
-    private Array<Obstacle> obstacles = new Array<Obstacle>();
-    private float obstacleTimer;
-    private float scoreTimer;
-    private int lives = GameConfig.LIVES_START;
-    private int score;
-    private int displayScore;
-    private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
 
     // == constructors ==
-    public GameRenderer() {
+    public GameRenderer(GameController controller) {
+        this.controller = controller;
         init();
     }
 
@@ -99,12 +91,12 @@ public class GameRenderer implements Disposable {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
 
-        String livesText = "LIVES: " + lives;
+        String livesText = "LIVES: " + controller.getLives();
         layout.setText(font, livesText);
 
         font.draw(batch, livesText, 20, GameConfig.HUD_HEIGHT - layout.height);
 
-        String scoreText = "SCORE: " + displayScore;
+        String scoreText = "SCORE: " + controller.getDisplayScore();
         layout.setText(font, scoreText);
 
         font.draw(batch, scoreText, GameConfig.HUD_WIDTH - layout.width - 20, GameConfig.HUD_HEIGHT - layout.height);
@@ -125,7 +117,9 @@ public class GameRenderer implements Disposable {
     }
 
     private void drawDebug() {
-        player.drawDebug(renderer);
+        controller.getPlayer().drawDebug(renderer);
+
+        Array<Obstacle> obstacles = controller.getObstacles();
 
         for (Obstacle obstacle : obstacles) {
             obstacle.drawDebug(renderer);
