@@ -77,7 +77,8 @@ public class GameController {
 
     // == private methods ==
     private boolean isGameOver() {
-        return lives <= 0;
+        return false;
+//        return lives <= 0;
     }
 
     private boolean isPlayerCollidingWithObstacle() {
@@ -111,6 +112,7 @@ public class GameController {
         }
 
         createNewObstacle(delta);
+        removePassedObstacles();
     }
 
     private void createNewObstacle(float delta) {
@@ -143,6 +145,18 @@ public class GameController {
     private void updateDisplayScore(float delta) {
         if (displayScore < score) {
             displayScore = Math.min(score, displayScore + (int) (60 * delta));
+        }
+    }
+
+    private void removePassedObstacles() {
+        if(obstacles.size > 0) {
+            Obstacle first = obstacles.first();
+
+            float minObstacleY = -Obstacle.SIZE;
+
+            if(first.getY() < minObstacleY) {
+                obstacles.removeValue(first, true);
+            }
         }
     }
 }
