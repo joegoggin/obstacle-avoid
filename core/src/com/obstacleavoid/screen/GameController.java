@@ -119,8 +119,8 @@ public class GameController {
         obstacleTimer += delta;
 
         if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
-            float min = 0f;
-            float max = GameConfig.WORLD_WIDTH;
+            float min = Obstacle.SIZE / 2;
+            float max = GameConfig.WORLD_WIDTH - Obstacle.SIZE / 2;
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
