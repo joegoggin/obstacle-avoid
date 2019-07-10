@@ -3,6 +3,8 @@ package com.obstacleavoid.screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Obstacle;
@@ -22,6 +24,7 @@ public class GameController {
     private int score;
     private int displayScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
+    private Pool<Obstacle> obstaclePool;
 
     // == constructors ==
     public GameController() {
@@ -39,6 +42,9 @@ public class GameController {
 
         // position player
         player.setPosition(startPlayerX, startPlayerY);
+
+        // create obstacle pool
+        obstaclePool = Pools.get(Obstacle.class, 40);
     }
 
     // == public methods ==
@@ -124,7 +130,7 @@ public class GameController {
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
-            Obstacle obstacle = new Obstacle();
+            Obstacle obstacle = obstaclePool.obtain();
             obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 
@@ -156,6 +162,7 @@ public class GameController {
 
             if(first.getY() < minObstacleY) {
                 obstacles.removeValue(first, true);
+                obstaclePool.free(first);
             }
         }
     }
