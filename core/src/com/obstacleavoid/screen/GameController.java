@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
+import com.obstacleavoid.entity.Background;
 import com.obstacleavoid.entity.Obstacle;
 import com.obstacleavoid.entity.Player;
 
@@ -18,6 +19,7 @@ public class GameController {
     // == attributes ==
     private Player player;
     private Array<Obstacle> obstacles = new Array<Obstacle>();
+    private Background background;
     private float obstacleTimer;
     private float scoreTimer;
     private int lives = GameConfig.LIVES_START;
@@ -45,6 +47,11 @@ public class GameController {
 
         // create obstacle pool
         obstaclePool = Pools.get(Obstacle.class, 40);
+
+        // create background
+        background = new Background();
+        background.setPosition(0, 0);
+        background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
     }
 
     // == public methods ==
@@ -71,6 +78,10 @@ public class GameController {
 
     public Array<Obstacle> getObstacles() {
         return obstacles;
+    }
+
+    public Background getBackground() {
+        return background;
     }
 
     public int getLives() {

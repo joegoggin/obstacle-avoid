@@ -25,6 +25,10 @@ public class Obstacle extends GameObjectBase implements Pool.Poolable{
         return SIZE;
     }
 
+    public float getHeight() {
+        return SIZE;
+    }
+
     public boolean isPlayerColliding(Player player) {
         Circle playerBounds = player.getBounds();
         // check if playerBounds overlap obstacle bounds
