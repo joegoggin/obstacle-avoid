@@ -11,6 +11,7 @@ public class Player extends GameObjectBase {
 
     public Player() {
         super(BOUNDS_RADIUS);
+        setSize(SIZE, SIZE);
     }
 
     public void update() {
@@ -22,15 +23,8 @@ public class Player extends GameObjectBase {
             xSpeed = -GameConfig.MAX_PLAYER_X_SPEED;
         }
 
-        x += xSpeed;
+        setPosition(getX() + xSpeed, getY());
         updateBounds();
     }
 
-    public float getWidth() {
-        return SIZE;
-    }
-
-    public float getHeight() {
-        return SIZE;
-    }
 }

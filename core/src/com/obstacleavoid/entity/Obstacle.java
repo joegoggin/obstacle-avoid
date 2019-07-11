@@ -15,18 +15,11 @@ public class Obstacle extends GameObjectBase implements Pool.Poolable{
 
     public Obstacle() {
         super(BOUNDS_RADIUS);
+        setSize(SIZE, SIZE);
     }
 
     public void update() {
-        setPosition(x, y - ySpeed);
-    }
-
-    public float getWidth() {
-        return SIZE;
-    }
-
-    public float getHeight() {
-        return SIZE;
+        setPosition(getX(), getY() - ySpeed);
     }
 
     public boolean isPlayerColliding(Player player) {
