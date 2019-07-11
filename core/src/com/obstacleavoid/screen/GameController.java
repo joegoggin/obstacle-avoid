@@ -137,8 +137,8 @@ public class GameController {
         obstacleTimer += delta;
 
         if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
-            float min = Obstacle.SIZE / 2;
-            float max = GameConfig.WORLD_WIDTH - Obstacle.SIZE / 2;
+            float min = 0;
+            float max = GameConfig.WORLD_WIDTH - GameConfig.OBSTACLE_SIZE;
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
@@ -170,7 +170,7 @@ public class GameController {
         if(obstacles.size > 0) {
             Obstacle first = obstacles.first();
 
-            float minObstacleY = -Obstacle.SIZE;
+            float minObstacleY = -GameConfig.OBSTACLE_SIZE;
 
             if(first.getY() < minObstacleY) {
                 obstacles.removeValue(first, true);
