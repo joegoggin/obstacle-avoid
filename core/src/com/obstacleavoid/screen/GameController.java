@@ -1,5 +1,7 @@
 package com.obstacleavoid.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
@@ -67,7 +69,7 @@ public class GameController {
             log.debug("Collision detected.");
             lives--;
 
-            if(isGameOver()) {
+            if (isGameOver()) {
                 log.debug("Game Over!!!");
             } else {
                 restart();
@@ -95,15 +97,15 @@ public class GameController {
         return displayScore;
     }
 
+    public boolean isGameOver() {
+        return lives <= 0;
+    }
+
     // == private methods ==
     private void restart() {
         obstaclePool.freeAll(obstacles);
         obstacles.clear();
         player.setPosition(startPlayerX, startPlayerY);
-    }
-
-    private boolean isGameOver() {
-        return lives <= 0;
     }
 
     private boolean isPlayerCollidingWithObstacle() {
@@ -117,7 +119,16 @@ public class GameController {
     }
 
     private void updatePlayer() {
-        player.update();
+        float xSpeed = 0;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xSpeed = GameConfig.MAX_PLAYER_X_SPEED;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xSpeed = -GameConfig.MAX_PLAYER_X_SPEED;
+        }
+
+        player.setPosition(player.getX() + xSpeed, player.getY());
+
         blockPlayerFromLeavingTheWorld();
     }
 
@@ -174,12 +185,12 @@ public class GameController {
     }
 
     private void removePassedObstacles() {
-        if(obstacles.size > 0) {
+        if (obstacles.size > 0) {
             Obstacle first = obstacles.first();
 
             float minObstacleY = -GameConfig.OBSTACLE_SIZE;
 
-            if(first.getY() < minObstacleY) {
+            if (first.getY() < minObstacleY) {
                 obstacles.removeValue(first, true);
                 obstaclePool.free(first);
             }
